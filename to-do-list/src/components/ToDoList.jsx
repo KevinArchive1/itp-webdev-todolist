@@ -1,24 +1,11 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import TodoItem from './ToDoItems';
 
 function TodoList(){
-    const [tasks, setTasks] = useState([
-        {
-            id: 1,
-            text: "Find Meaning to my life",
-            completed: false,
-        },
-        {
-            id: 2,
-            text: "Forgive Myself",
-            completed: false,
-        },
-        {
-            id: 3,
-            text: "Have Fun with my life",
-            completed: true,
-        },
-    ]);    
+    const [tasks, setTasks] = useState(() => {
+        const savedTask = localStorage.getItem("tasks");
+        return savedTask ? JSON.parse(savedTask) : [];
+    });     
     const [text, setText] = useState('')
 
 function addTask(text) {
@@ -29,6 +16,10 @@ function addTask(text) {
     setTasks([...tasks, newTask]);
     setText('');
 };
+
+useEffect(() => {
+    localStorage.setItem("tasks", JSON.stringify(tasks));
+}, [tasks]); 
 
 function deleteTask(id){
     setTasks(tasks.filter(task => task.id !== id))
